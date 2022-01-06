@@ -22,20 +22,13 @@ export type Args = {
 /**
  * Static website using Amazon S3, CloudFront, and Route53.
  */
-export class AWSStaticWebsite extends pulumi.ComponentResource {
+export class AWSS3StaticWebsite extends pulumi.ComponentResource {
 
   readonly contentBucket: aws.s3.Bucket
   readonly cdn: aws.cloudfront.Distribution
   readonly aRecord?: aws.route53.Record
   readonly wwwaRecord?: aws.route53.Record
 
-  /**
-  * Creates a new static website hosted on AWS.
-  * @param name  The _unique_ name of the resource.
-  * @param contentArgs  The arguments to configure the content being served.
-  * @param domainArgs  The arguments to configure the domain and DNS settings.
-  * @param opts  A bag of options that control this resource's behavior.
-  */
   constructor(
     name: string,
     args: Args,
