@@ -28,7 +28,7 @@ export type Args = {
  */
 export class AWSLambdaAPI extends pulumi.ComponentResource {
 
-  readonly api: aws.apigateway.RestApi
+  readonly api: awsx.apigateway.API
   readonly lambdas: aws.lambda.Function[]
   readonly aRecord?: aws.route53.Record
 
@@ -159,7 +159,7 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
       })),
       stageName: 'api'
     }, opts)
-    this.api = api.restAPI
+    this.api = api
 
 
     //
