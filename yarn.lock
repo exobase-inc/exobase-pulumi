@@ -35,21 +35,6 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@exobase/api@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@exobase/api/-/api-0.0.6.tgz#326ce5145057998110173f1d65ae100e6f38e008"
-  integrity sha512-lIWmmcOM1SWDlvmLZb93nhCBsW45EHCWZDmrBOhkMsQWtWSelBOiDFLLwJU7pzRP9rQNOHsy+zM3Khwd1FJbew==
-  dependencies:
-    axios "^0.24.0"
-    radash "^1.2.0"
-
-"@exobase/client-js@^0.0.27":
-  version "0.0.27"
-  resolved "https://registry.yarnpkg.com/@exobase/client-js/-/client-js-0.0.27.tgz#fc11cfb599a749433c1a3497dcbd781413c8b259"
-  integrity sha512-iEj0OyUY+6Zk5rPaefWeQSOmylQSxDO08yfaraexQZqyHDP/wYKWMwAWgsqFKs1l0L9zZzWk65XnYUwhdKwJnQ==
-  dependencies:
-    "@exobase/api" "^0.0.6"
-
 "@gar/promisify@^1.0.1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
@@ -1320,13 +1305,6 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
-  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
-  dependencies:
-    follow-redirects "^1.14.4"
-
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
@@ -1861,11 +1839,6 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-directory-tree@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/directory-tree/-/directory-tree-3.0.1.tgz#ce7e087d7a9a58947ab802125b4c45481270db72"
-  integrity sha512-IJL5L/zd73xbchfsIKMrhaRJCt28ek1UsS6LNZ6b9r7m+VbU1fd7JZAypn6gl1g4hpxn21QF3/scAWKIOMk4Ug==
-
 dot-prop@^5.1.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-5.3.0.tgz#90ccce708cd9cd82cc4dc8c3ddd9abdd55b20e88"
@@ -2087,11 +2060,6 @@ find-up@^4.0.0, find-up@^4.1.0:
   dependencies:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
-
-follow-redirects@^1.14.4:
-  version "1.14.6"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
-  integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
 
 forever-agent@~0.6.1:
   version "0.6.1"
@@ -3862,7 +3830,7 @@ quick-lru@^4.0.1:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-4.0.1.tgz#5b8878f113a58217848c6482026c73e1ba57727f"
   integrity sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==
 
-radash@^1.2.0, radash@^1.4.0:
+radash@^1.4.0:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/radash/-/radash-1.5.2.tgz#35029259b22e6f420f94402b1a1dc8dec2319d97"
   integrity sha512-3G5h7O51h3YhjjUKvVL2aaQx1LWQXxlp6CFhFEpfRaBoR4gfeLc7QV0kvfHHoOMooX2C7HBqc2CG7stPhZcs7A==
