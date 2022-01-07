@@ -1,6 +1,6 @@
 {
   "name": "@exobase/pulumi-aws-s3-static-website",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "Exobase pulumi package for creating resources in AWS that make up a static website on S3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
