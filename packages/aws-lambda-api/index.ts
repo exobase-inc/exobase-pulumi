@@ -12,6 +12,9 @@ export type Args = {
   sourceDir: string
   sourceExt: LanguageExtension
   sourceZip: string
+  runtime: string
+  timeout: number
+  memory: number
   environmentVariables: {
     name: string
     value: string
@@ -122,9 +125,15 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
         code: zipSource,
         role: iamForLambda.arn,
         handler: `modules/${func.module}/${func.function}.default`,
-        runtime: 'nodejs14.x',
+        runtime: args.runtime,
+        timeout: args.timeout,
+        memorySize: args.memory,
         environment: {
-          variables: envvars
+          variables: {
+            ...envvars,
+            EXOBASE_MODULE: func.module,
+            EXOBASE_FUNCTION: func.function
+          }
         }
       }, {
         ...opts,
