@@ -46,7 +46,6 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
       sourceDir,
       domain
     } = args
-    const distributionDir = path.join(sourceDir, distDir)
 
     //
     //  BUILD SITE CONTENT
@@ -70,8 +69,8 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
     this.contentBucket = bucket
 
     // For each file in the directory, create an S3 object stored in `bucket`
-    build.then(() => crawlDirectory(distributionDir, (filePath: string) => {
-      const relativeFilePath = filePath.replace(distributionDir + '/', '')
+    build.then(() => crawlDirectory(distDir, (filePath: string) => {
+      const relativeFilePath = filePath.replace(distDir + '/', '')
       new aws.s3.BucketObject(relativeFilePath, {
         key: relativeFilePath,
         acl: 'public-read',
