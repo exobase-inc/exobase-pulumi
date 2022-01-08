@@ -88,7 +88,7 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
     //  LOOKUP DOMAIN CERT
     //
     const useCustomDomain = !!domain
-    const useWWWSubdomain = useCustomDomain && !!domain.subdomain
+    const useWWWSubdomain = !!domain && !!domain.subdomain
     const cert = (() => {
       if (!domain) return undefined
       return pulumi.output(aws.acm.getCertificate({
@@ -97,7 +97,7 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
         types: ["AMAZON_ISSUED"]
       }, opts))
     })()
-    
+
 
     //
     //  CREATE CLOUDFRONT DISTRIBUTION
@@ -112,8 +112,8 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
         // If the custom domain specifies a subdomain then don't
         // create the www. alias.
         if (!useCustomDomain) return undefined
-        if (!useWWWSubdomain) return [domain.fqd]
-        return [domain.fqd, `www.${domain.domain}`]
+        if (useWWWSubdomain) return [domain.fqd, `www.${domain.domain}`]
+        return [domain.fqd]
       })(),
 
       // We only specify one origin for this distribution, the S3 content bucket.
@@ -206,15 +206,11 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
         }]
       }, opts)
       if (useWWWSubdomain) {
-        this.wwwaRecord = new aws.route53.Record(`${domain}-www-alias`, {
-          name: `www.${domain}`,
+        this.wwwaRecord = new aws.route53.Record(`${domain.domain}-www-alias`, {
+          name: `www.${domain.domain}`,
           zoneId: zone.id,
-          type: "A",
-          aliases: [{
-            name: this.cdn.domainName,
-            zoneId: this.cdn.hostedZoneId,
-            evaluateTargetHealth: true,
-          }]
+          type: "CNAME",
+          records: [domain.domain]
         }, opts)
       }
     }
