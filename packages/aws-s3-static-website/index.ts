@@ -88,7 +88,7 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
     //  LOOKUP DOMAIN CERT
     //
     const useCustomDomain = !!domain
-    const useWWWSubdomain = !!domain && !!domain.subdomain
+    const useWWWSubdomain = !!domain && !domain.subdomain
     const cert = (() => {
       if (!domain) return undefined
       return pulumi.output(aws.acm.getCertificate({
