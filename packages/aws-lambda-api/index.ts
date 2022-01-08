@@ -271,10 +271,6 @@ const buildLambdaZip = async (args: Args): Promise<string> => {
   //
   // Build the source
   //
-  console.log({
-    running: args.buildCommand,
-    in: args.sourceDir
-  })
   const [err] = await cmd(args.buildCommand, {
     cwd: args.sourceDir
   })
@@ -284,7 +280,7 @@ const buildLambdaZip = async (args: Args): Promise<string> => {
   // Generate new zip
   //
   await cmd(`zip -q -r ${zip} *`, {
-    cwd: `${args.sourceDir}${args.distDirName}`
+    cwd: `${args.sourceDir}/${args.distDirName}`
   })
 
   return zip
