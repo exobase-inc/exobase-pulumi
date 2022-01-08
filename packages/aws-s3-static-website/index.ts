@@ -210,6 +210,7 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
           name: `www.${domain.domain}`,
           zoneId: zone.id,
           type: "CNAME",
+          ttl: 60,
           records: [domain.domain]
         }, opts)
       }
