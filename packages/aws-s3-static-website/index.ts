@@ -90,16 +90,14 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
     const useCustomDomain = !!domain
     const useWWWSubdomain = useCustomDomain && !!domain.subdomain
     const cert = (() => {
-      if (domain) return undefined
+      if (!domain) return undefined
       return pulumi.output(aws.acm.getCertificate({
         domain: domain.subdomain ? `*.${domain.domain}` : domain.domain,
         mostRecent: true,
         types: ["AMAZON_ISSUED"]
       }, opts))
     })()
-
-    console.log('>>> CERT: ', cert)
-
+    
 
     //
     //  CREATE CLOUDFRONT DISTRIBUTION
