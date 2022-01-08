@@ -8,6 +8,7 @@
 yarn add --dev @exobase/pulumi-aws-lambda-api
 ```
 
+
 ## Usage
 
 ```ts
