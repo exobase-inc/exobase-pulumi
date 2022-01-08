@@ -98,6 +98,8 @@ export class AWSS3StaticWebsite extends pulumi.ComponentResource {
       }, opts))
     })()
 
+    console.log('>>> CERT: ', cert)
+
 
     //
     //  CREATE CLOUDFRONT DISTRIBUTION
