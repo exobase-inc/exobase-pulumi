@@ -2,7 +2,6 @@
 
 > Exobase pulumi package for creating resources in AWS that make up an API of lambda functions
 
-
 ## Install
 ```
 yarn add --dev @exobase/pulumi-aws-lambda-api
