@@ -4,6 +4,7 @@ import * as aws from '@pulumi/aws'
 import * as awsx from '@pulumi/awsx'
 import fs from 'fs-extra'
 import path from 'path'
+import cmd from 'cmdish'
 
 
 export type LanguageExtension = 'ts' | 'py' | 'go' | 'cs' | 'js' | 'swift'
@@ -11,10 +12,11 @@ export type LanguageExtension = 'ts' | 'py' | 'go' | 'cs' | 'js' | 'swift'
 export type Args = {
   sourceDir: string
   sourceExt: LanguageExtension
-  sourceZip: string
   runtime: string
   timeout: number
   memory: number
+  distDirName: string
+  buildCommand: string
   environmentVariables: {
     name: string
     value: string
@@ -115,7 +117,7 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
     //
     //  CREATE LAMBDA FOR EACH FUNCTION
     //
-    const zipSource = new pulumi.asset.FileArchive(args.sourceZip)
+    const zipSource = new pulumi.asset.FileArchive(buildLambdaZip(args))
     const envvars = args.environmentVariables.reduce((acc, envvar) => ({
       ...acc,
       [envvar.name]: envvar.value
@@ -259,4 +261,27 @@ export function getFunctionMap({
         }) as ModuleFunction[]
     })
   return _.flat(modules)
+}
+
+
+const buildLambdaZip = async (args: Args): Promise<string> => {
+
+  const zip = `${args.sourceDir}/aws-lambda-api.zip`
+
+  //
+  // Build the source
+  //
+  const [err] = await cmd(args.buildCommand, {
+    cwd: args.sourceDir
+  })
+  if (err) throw err
+
+  //
+  // Generate new zip
+  //
+  await cmd(`zip -q -r ${zip} *`, {
+    cwd: `${args.sourceDir}${args.distDirName}`
+  })
+
+  return zip
 }
