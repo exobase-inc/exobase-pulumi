@@ -179,7 +179,7 @@ const buildSourceZip = async (args: Args): Promise<string> => {
   //
   const buildspecTemplate = await fs.readFile(`${__dirname}/buildspec.yml`, 'utf-8')
   const buildspec = buildspecTemplate.replace('{{command}}', args.buildCommand)
-  await fs.writeFile(`${__dirname}/source/buildspec.yml`, buildspec)
+  await fs.writeFile(`${args.sourceDir}/buildspec.yml`, buildspec)
 
   //
   // Generate zip
