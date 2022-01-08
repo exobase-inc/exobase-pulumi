@@ -83,7 +83,7 @@ export class AWSCodeBuildProject extends pulumi.ComponentResource {
     //
     //  CREATE ROLE/POLICY
     //
-    const { role } = createRolePolicy({ bucket })
+    const { role } = createRolePolicy({ bucket, opts })
 
 
     //
@@ -116,7 +116,13 @@ export class AWSCodeBuildProject extends pulumi.ComponentResource {
   }
 }
 
-const createRolePolicy = ({ bucket }: { bucket: aws.s3.Bucket }) => {
+const createRolePolicy = ({ 
+  bucket, 
+  opts 
+}: { 
+  bucket: aws.s3.Bucket, 
+  opts?: pulumi.ResourceOptions 
+}) => {
   const role = new aws.iam.Role("main", {
     assumeRolePolicy: `{
     "Version": "2012-10-17",
@@ -130,7 +136,7 @@ const createRolePolicy = ({ bucket }: { bucket: aws.s3.Bucket }) => {
       }
     ]
   }
-  `});
+  `}, opts);
   const policy = new aws.iam.RolePolicy("main", {
     role: role.name,
     policy: pulumi.interpolate`{
@@ -159,7 +165,7 @@ const createRolePolicy = ({ bucket }: { bucket: aws.s3.Bucket }) => {
         }
       ]
     }`
-  })
+  }, opts)
   return { role, policy }
 }
 
