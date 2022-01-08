@@ -271,6 +271,10 @@ const buildLambdaZip = async (args: Args): Promise<string> => {
   //
   // Build the source
   //
+  console.log({
+    running: args.buildCommand,
+    in: args.sourceDir
+  })
   const [err] = await cmd(args.buildCommand, {
     cwd: args.sourceDir
   })
