@@ -3,7 +3,6 @@ import * as pulumi from '@pulumi/pulumi'
 import * as aws from '@pulumi/aws'
 import * as awsx from '@pulumi/awsx'
 import fs from 'fs-extra'
-import cmd from 'cmdish'
 import path from 'path'
 
 
@@ -12,6 +11,7 @@ export type LanguageExtension = 'ts' | 'py' | 'go' | 'cs' | 'js' | 'swift'
 export type Args = {
   sourceDir: string
   sourceExt: LanguageExtension
+  sourceZip: string
   environmentVariables: {
     name: string
     value: string
@@ -67,14 +67,6 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
 
 
     //
-    //  BUILD NEEDED FUNCTIONS
-    //
-    const zipPath = buildTypescriptLambdaZip({
-      path: args.sourceDir
-    })
-
-
-    //
     //  CREATE NEEDED ROLE/POLICY
     //
     const iamForLambda = new aws.iam.Role(iamRoleName, {
@@ -120,7 +112,7 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
     //
     //  CREATE LAMBDA FOR EACH FUNCTION
     //
-    const zipSource = new pulumi.asset.FileArchive(zipPath)
+    const zipSource = new pulumi.asset.FileArchive(args.sourceZip)
     const envvars = args.environmentVariables.reduce((acc, envvar) => ({
       ...acc,
       [envvar.name]: envvar.value
@@ -208,39 +200,6 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
       })
     }
   }
-}
-
-
-const buildTypescriptLambdaZip = async ({
-  path
-}: {
-  path: string
-}): Promise<string> => {
-
-  const root = path
-  const build = `${root}/build`
-  const zip = `${root}/aws-lambda-api.zip`
-
-  const USE_NVM = !!process.env.USE_NVM
-
-  //
-  // Add files and install dependencies
-  //
-  await fs.copy(`${root}/package.json`, `${build}/package.json`)
-  if (USE_NVM) {
-    const [err] = await cmd('source ~/.nvm/nvm.sh && nvm use && yarn && yarn build && cd build && yarn --prod', { cwd: root })
-    if (err) throw err
-  } else {
-    const [err] = await cmd('yarn && yarn build && cd build && yarn --prod', { cwd: root })
-    if (err) throw err
-  }
-
-  //
-  // Generate new zip
-  //
-  await cmd(`zip -q -r ${zip} *`, { cwd: build })
-
-  return zip
 }
 
 export type Function = {
