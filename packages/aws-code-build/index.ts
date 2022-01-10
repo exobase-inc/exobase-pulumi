@@ -109,7 +109,7 @@ export class AWSCodeBuildProject extends pulumi.ComponentResource {
       },
       source: {
         type: "S3",
-        location: `${bucket.bucket}/source.zip`
+        location: `s3://${bucket.bucket}/source.zip`
       }
     }, {
       ...opts,
