@@ -33,6 +33,7 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
   readonly api: awsx.apigateway.API
   readonly lambdas: aws.lambda.Function[]
   readonly aRecord?: aws.route53.Record
+  readonly role: aws.iam.Role
 
   constructor(
     name: string,
@@ -86,6 +87,7 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
       ]
     }`
     }, opts)
+    this.role = iamForLambda
     const lambdaLoggingPolicy = new aws.iam.Policy("lambdaLogging", {
       path: "/",
       description: "IAM policy for logging from a lambda",
