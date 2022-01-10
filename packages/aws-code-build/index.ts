@@ -114,7 +114,7 @@ export class AWSCodeBuildProject extends pulumi.ComponentResource {
       }
     }, {
       ...opts,
-      dependsOn: [ sourceZip ]
+      dependsOn: [ bucket, sourceZip ]
     })
   }
 }
