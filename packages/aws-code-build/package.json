@@ -1,6 +1,6 @@
 {
   "name": "@exobase/pulumi-aws-code-build",
-  "version": "0.0.1-alpha.4",
+  "version": "0.0.1-alpha.5",
   "description": "Exobase pulumi package for creating AWS Code Build resources",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
