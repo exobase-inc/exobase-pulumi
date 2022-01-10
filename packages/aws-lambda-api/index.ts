@@ -17,10 +17,7 @@ export type Args = {
   memory: number
   distDirName: string
   buildCommand: string
-  environmentVariables: {
-    name: string
-    value: string
-  }[]
+  environmentVariables: { [key: string]: pulumi.Input<string> }
   domain?: {
     domain: string
     fqd: string
@@ -118,10 +115,6 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
     //  CREATE LAMBDA FOR EACH FUNCTION
     //
     const zipSource = new pulumi.asset.FileArchive(buildLambdaZip(args))
-    const envvars = args.environmentVariables.reduce((acc, envvar) => ({
-      ...acc,
-      [envvar.name]: envvar.value
-    }), {})
     const lambdas = functions.map((func) => {
       const lambda = new aws.lambda.Function(lambdaName(func.module, func.function), {
         code: zipSource,
@@ -132,7 +125,7 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
         memorySize: args.memory,
         environment: {
           variables: {
-            ...envvars,
+            ...args.environmentVariables,
             EXOBASE_MODULE: func.module,
             EXOBASE_FUNCTION: func.function
           }
