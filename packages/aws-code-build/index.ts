@@ -65,8 +65,7 @@ export class AWSCodeBuildProject extends pulumi.ComponentResource {
     //
     // CREATE BUCKET & STORE SOURCE
     //
-    const bucketName = _.dashCase(`${name}-source`)
-    const bucket = new aws.s3.Bucket(bucketName, {
+    const bucket = new aws.s3.Bucket(_.dashCase(`${name}-source`), {
       acl: 'private'
     }, opts)
     const sourceZip = new aws.s3.BucketObject(`source.zip`, {
@@ -110,7 +109,7 @@ export class AWSCodeBuildProject extends pulumi.ComponentResource {
       },
       source: {
         type: "S3",
-        location: `${bucketName}/source.zip`
+        location: `${bucket.bucket}/source.zip`
       }
     }, {
       ...opts,
