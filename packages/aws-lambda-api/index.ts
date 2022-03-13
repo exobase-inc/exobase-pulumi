@@ -2,10 +2,7 @@ import _ from 'radash'
 import * as pulumi from '@pulumi/pulumi'
 import * as aws from '@pulumi/aws'
 import * as awsx from '@pulumi/awsx'
-import fs from 'fs-extra'
-import path from 'path'
-import cmd from 'cmdish'
-
+import type { ModuleFunction } from '@exobase/builds'
 
 export type LanguageExtension = 'ts' | 'py' | 'go' | 'cs' | 'js' | 'swift'
 
@@ -15,8 +12,9 @@ export type Args = {
   runtime: string
   timeout: number
   memory: number
-  distDirName: string
-  buildCommand: string
+  getZip: (func: { module: string; function: string }) => pulumi.asset.FileArchive
+  getHandler: (func: { module: string; function: string }) => string
+  functions: ModuleFunction[]
   environmentVariables: { [key: string]: pulumi.Input<string> }
   domain?: {
     domain: string
@@ -58,15 +56,6 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
         ? n.slice(0, 56 - n.length)
         : n
     }
-
-
-    //
-    //  DETERMINE API SHAPE FROM SOURCE
-    //
-    const functions = getFunctionMap({
-      path: args.sourceDir,
-      ext: args.sourceExt
-    })
 
 
     //
@@ -116,14 +105,13 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
     //
     //  CREATE LAMBDA FOR EACH FUNCTION
     //
-    const lambdas = functions.map((func) => {
-      const zipSource = new pulumi.asset.FileArchive(
-        path.resolve(args.distDirName, 'modules', func.module, `${func.function}.zip`)
-      )
+    const lambdas = args.functions.map((func) => {
+      const zipSource = args.getZip(func)
+      const handler = args.getHandler(func)
       const lambda = new aws.lambda.Function(lambdaName(func.module, func.function), {
         code: zipSource,
         role: iamForLambda.arn,
-        handler: `modules/${func.module}/${func.function}.default`,
+        handler,
         runtime: args.runtime,
         timeout: args.timeout,
         memorySize: args.memory,
@@ -208,79 +196,4 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
       })
     }
   }
-}
-
-export type Function = {
-  name: string
-  module: string
-  path: string
-  route: string
-}
-
-type ModuleFunction = {
-  function: string
-  module: string
-  paths: {
-    import: string
-    file: string
-  }
-}
-
-/**
- * Looks in ./src/modules for your modules and
- * functions. Returns their names and locations
- * as an array.
- */
-export function getFunctionMap({
-  path: rootPath,
-  ext
-}: {
-  path: string
-  ext: LanguageExtension
-}): ModuleFunction[] {
-  const relPath = (rel: string) => path.join(rootPath, rel)
-  const modules = fs.readdirSync(relPath('/src/modules'), { withFileTypes: true })
-    .filter(item => item.isDirectory())
-    .map(m => {
-      return fs.readdirSync(relPath(`/src/modules/${m.name}`), { withFileTypes: true })
-        .filter(item => !item.isDirectory())
-        .filter(item => item.name.endsWith(`.${ext}`))
-        .map(tsFile => {
-          const funcName = tsFile.name.replace(`.${ext}`, '')
-          return {
-            function: funcName,
-            module: m.name,
-            paths: {
-              file: relPath(`/src/modules/${m.name}/${tsFile.name}`),
-              import: relPath(`/src/modules/${m.name}/${funcName}`)
-            }
-          }
-        }) as ModuleFunction[]
-    })
-  return _.flat(modules)
-}
-
-
-const buildLambdaZip = async (args: Args): Promise<string> => {
-
-  const zip = `${args.sourceDir}/aws-lambda-api.zip`
-
-  //
-  // Build the source
-  //
-  console.log('Building lambda with command:')
-  console.log(`  > ${args.buildCommand}`)
-  const [err] = await cmd(args.buildCommand, {
-    cwd: args.sourceDir
-  })
-  if (err) throw err
-
-  //
-  // Generate new zip
-  //
-  await cmd(`zip -q -r ${zip} *`, {
-    cwd: `${args.sourceDir}/${args.distDirName}`
-  })
-
-  return zip
 }
