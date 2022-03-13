@@ -116,8 +116,10 @@ export class AWSLambdaAPI extends pulumi.ComponentResource {
     //
     //  CREATE LAMBDA FOR EACH FUNCTION
     //
-    const zipSource = new pulumi.asset.FileArchive(buildLambdaZip(args))
     const lambdas = functions.map((func) => {
+      const zipSource = new pulumi.asset.FileArchive(
+        path.resolve(args.distDirName, 'modules', func.module, `${func.function}.zip`)
+      )
       const lambda = new aws.lambda.Function(lambdaName(func.module, func.function), {
         code: zipSource,
         role: iamForLambda.arn,
